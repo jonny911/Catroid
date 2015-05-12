@@ -134,7 +134,6 @@ public final class ServerCalls {
 			Log.v(TAG, "Url to upload: " + serverUrl);
 
 			File file = new File(zipFileString);
-
 			RequestBody requestBody = new MultipartBuilder()
 					.type(MultipartBuilder.FORM)
 					.addFormDataPart(
