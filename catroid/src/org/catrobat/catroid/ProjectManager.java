@@ -266,6 +266,16 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 		return project;
 	}
 
+	public boolean isCurrentProjectLandscape() {
+		int virtualScreenWidth = getCurrentProject().getXmlHeader().virtualScreenWidth;
+		int virtualScreenHeight = getCurrentProject().getXmlHeader().virtualScreenHeight;
+
+		if (virtualScreenWidth > virtualScreenHeight) {
+			return true;
+		}
+		return false;
+	}
+
 	public void setProject(Project project) {
 		currentScript = null;
 		currentSprite = null;

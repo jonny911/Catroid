@@ -27,7 +27,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.util.Log;
+import android.view.Surface;
+import android.view.WindowManager;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.bluetooth.base.BluetoothDevice;
 import org.catrobat.catroid.bluetooth.base.BluetoothDeviceService;
 import org.catrobat.catroid.common.CatroidService;
@@ -44,6 +47,7 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 	private Sensor rotationVectorSensor = null;
 	private float[] rotationMatrix = new float[16];
 	private float[] rotationVector = new float[3];
+	private static final float LANDSCAPE_OFFSET = 90f;
 	public static final float RADIAN_TO_DEGREE_CONST = 180f / (float) Math.PI;
 
 	private float linearAcceleartionX = 0f;
@@ -55,6 +59,7 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 	private float faceSize = 0f;
 	private float facePositionX = 0f;
 	private float facePositionY = 0f;
+	private static Context mContext;
 
 	private static BluetoothDeviceService btService = ServiceProvider.getService(CatroidService.BLUETOOTH_DEVICE_SERVICE);
 
@@ -63,6 +68,7 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 				(android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE));
 		accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 		rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+		mContext = context;
 	}
 
 	public static void startSensorListener(Context context) {
@@ -114,6 +120,7 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 			return 0d;
 		}
 		Double sensorValue;
+
 		switch (sensor) {
 
 			case X_ACCELERATION:
@@ -131,6 +138,7 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 						instance.rotationVector);
 				android.hardware.SensorManager.getOrientation(instance.rotationMatrix, orientations);
 				sensorValue = (double) orientations[0];
+
 				return sensorValue * RADIAN_TO_DEGREE_CONST * -1f;
 
 			case X_INCLINATION:
@@ -140,9 +148,16 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 						instance.rotationVector);
 				android.hardware.SensorManager.getOrientation(instance.rotationMatrix, orientations);
 				sensorValue = (double) orientations[2];
+				if(ProjectManager.getInstance().isCurrentProjectLandscape()){
+					return (sensorValue * RADIAN_TO_DEGREE_CONST * -1f) - LANDSCAPE_OFFSET;
+				}
+
 				return sensorValue * RADIAN_TO_DEGREE_CONST * -1f;
 
 			case Y_INCLINATION:
+
+				 float[] rotationMatrixOut = new float[16];
+
 				orientations = new float[3];
 				android.hardware.SensorManager.getRotationMatrixFromVector(instance.rotationMatrix,
 						instance.rotationVector);
@@ -151,6 +166,19 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 				float xInclinationUsedToExtendRangeOfRoll = orientations[2] * RADIAN_TO_DEGREE_CONST * -1f;
 
 				sensorValue = (double) orientations[1];
+				//TODO: Jonny: Rework this
+				if(ProjectManager.getInstance().isCurrentProjectLandscape()) {
+
+					android.hardware.SensorManager.remapCoordinateSystem(instance.rotationMatrix, android.hardware.SensorManager
+							.AXIS_Y, android.hardware.SensorManager.AXIS_MINUS_X, rotationMatrixOut);
+					android.hardware.SensorManager.getOrientation(rotationMatrixOut, orientations);
+
+					xInclinationUsedToExtendRangeOfRoll = orientations[2] * RADIAN_TO_DEGREE_CONST * -1f;
+
+					sensorValue = (double) orientations[1];
+
+					Log.d(TAG, "Landscape y_inclination = " + sensorValue);
+				}
 
 				if (Math.abs(xInclinationUsedToExtendRangeOfRoll) <= 90f) {
 					return sensorValue * RADIAN_TO_DEGREE_CONST * -1f;
