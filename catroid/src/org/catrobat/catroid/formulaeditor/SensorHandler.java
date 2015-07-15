@@ -46,6 +46,7 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 	private Sensor accelerometerSensor = null;
 	private Sensor rotationVectorSensor = null;
 	private float[] rotationMatrix = new float[16];
+
 	private float[] rotationVector = new float[3];
 	private static final float LANDSCAPE_OFFSET = 90f;
 	public static final float RADIAN_TO_DEGREE_CONST = 180f / (float) Math.PI;
@@ -120,6 +121,7 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 			return 0d;
 		}
 		Double sensorValue;
+		float[] rotationMatrixOut = new float[16];
 
 		switch (sensor) {
 
@@ -146,39 +148,34 @@ public final class SensorHandler implements SensorEventListener, SensorCustomEve
 				orientations = new float[3];
 				android.hardware.SensorManager.getRotationMatrixFromVector(instance.rotationMatrix,
 						instance.rotationVector);
-				android.hardware.SensorManager.getOrientation(instance.rotationMatrix, orientations);
-				sensorValue = (double) orientations[2];
-				if(ProjectManager.getInstance().isCurrentProjectLandscape()){
-					return (sensorValue * RADIAN_TO_DEGREE_CONST * -1f) - LANDSCAPE_OFFSET;
+				if (ProjectManager.getInstance().isCurrentProjectLandscape()) {
+					android.hardware.SensorManager.remapCoordinateSystem(instance.rotationMatrix, android.hardware.SensorManager
+							.AXIS_Y, android.hardware.SensorManager.AXIS_MINUS_X, rotationMatrixOut);
+					android.hardware.SensorManager.getOrientation(rotationMatrixOut, orientations);
+
+				} else {
+					android.hardware.SensorManager.getOrientation(instance.rotationMatrix, orientations);
 				}
+				sensorValue = (double) orientations[2];
 
 				return sensorValue * RADIAN_TO_DEGREE_CONST * -1f;
 
 			case Y_INCLINATION:
 
-				 float[] rotationMatrixOut = new float[16];
 
 				orientations = new float[3];
 				android.hardware.SensorManager.getRotationMatrixFromVector(instance.rotationMatrix,
 						instance.rotationVector);
-				android.hardware.SensorManager.getOrientation(instance.rotationMatrix, orientations);
 
-				float xInclinationUsedToExtendRangeOfRoll = orientations[2] * RADIAN_TO_DEGREE_CONST * -1f;
-
-				sensorValue = (double) orientations[1];
-				//TODO: Jonny: Rework this
-				if(ProjectManager.getInstance().isCurrentProjectLandscape()) {
-
+				if (ProjectManager.getInstance().isCurrentProjectLandscape()) {
 					android.hardware.SensorManager.remapCoordinateSystem(instance.rotationMatrix, android.hardware.SensorManager
 							.AXIS_Y, android.hardware.SensorManager.AXIS_MINUS_X, rotationMatrixOut);
 					android.hardware.SensorManager.getOrientation(rotationMatrixOut, orientations);
-
-					xInclinationUsedToExtendRangeOfRoll = orientations[2] * RADIAN_TO_DEGREE_CONST * -1f;
-
-					sensorValue = (double) orientations[1];
-
-					Log.d(TAG, "Landscape y_inclination = " + sensorValue);
+				} else {
+					android.hardware.SensorManager.getOrientation(instance.rotationMatrix, orientations);
 				}
+				sensorValue = (double) orientations[1];
+				float xInclinationUsedToExtendRangeOfRoll = orientations[2] * RADIAN_TO_DEGREE_CONST * -1f;
 
 				if (Math.abs(xInclinationUsedToExtendRangeOfRoll) <= 90f) {
 					return sensorValue * RADIAN_TO_DEGREE_CONST * -1f;

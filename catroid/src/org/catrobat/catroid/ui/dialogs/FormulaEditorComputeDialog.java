@@ -28,9 +28,17 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.Bundle;
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.bluetooth.base.BluetoothDevice;
 import org.catrobat.catroid.bluetooth.base.BluetoothDeviceService;
@@ -41,6 +49,7 @@ import org.catrobat.catroid.facedetection.FaceDetectionHandler;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
+import org.catrobat.catroid.ui.BrickLayout;
 
 public class FormulaEditorComputeDialog extends AlertDialog implements SensorEventListener {
 
@@ -58,6 +67,21 @@ public class FormulaEditorComputeDialog extends AlertDialog implements SensorEve
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_formulaeditor_compute);
 		computeTextView = (TextView) findViewById(R.id.formula_editor_compute_dialog_textview);
+		if(ProjectManager.getInstance().isCurrentProjectLandscape()){
+
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(500, 500);
+
+			LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View view = inflater.inflate(R.layout.dialog_formulaeditor_compute, null);
+			view.setLayoutParams(params);
+			view.setRotation(90f);
+
+
+			computeTextView.setRotation(90f);
+			computeTextView.setHeight(100);
+			computeTextView.setWidth(50);
+
+		}
 		showFormulaResult();
 	}
 
