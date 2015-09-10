@@ -605,7 +605,7 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	public static HideTextAction hideText(Sprite sprite, String variableName) {
+	public static HideTextAction hideText(String variableName) {
 		HideTextAction action = action(HideTextAction.class);
 		action.setText(variableName);
 		return action;
