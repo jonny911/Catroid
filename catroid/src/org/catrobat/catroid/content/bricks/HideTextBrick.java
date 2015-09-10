@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.UserVariable;
@@ -50,6 +51,7 @@ import java.util.List;
 
 public class HideTextBrick extends UserVariableBrick {
 	private static final long serialVersionUID = 1L;
+	private static final String TAG = HideTextBrick.class.getSimpleName();
 	private transient View prototypeView;
 	private transient AdapterView<?> adapterView;
 	public String userVariableName;
@@ -122,10 +124,10 @@ public class HideTextBrick extends UserVariableBrick {
 							NewDataDialog.DIALOG_FRAGMENT_TAG);
 					return true;
 				}
-
 				return false;
 			}
 		});
+
 		variableSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -138,27 +140,18 @@ public class HideTextBrick extends UserVariableBrick {
 				((UserVariableAdapterWrapper) parent.getAdapter()).resetIsTouchInDropDownView();
 				userVariable = (UserVariable) parent.getItemAtPosition(position);
 				adapterView = parent;
+
+				setUserVariableName(userVariable);
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 				userVariable = (UserVariable) adapterView.getItemAtPosition(1);
-
-				userVariableName = "No variable set";
-				try {
-					userVariableName = userVariable.getName();
-				} catch (NullPointerException e) {
-					Log.d("HideTextBrick.java", "NullPointerException");
-				}
+				setUserVariableName(userVariable);
 			}
 		});
 
-		userVariableName = "No variable set";
-		try {
-			userVariableName = userVariable.getName();
-		} catch (NullPointerException e) {
-			Log.d("HideTextBrick.java", "NullPointerException");
-		}
+		setUserVariableName(userVariable);
 
 		return view;
 	}
@@ -185,19 +178,21 @@ public class HideTextBrick extends UserVariableBrick {
 	}
 
 	@Override
-	public void onClick(View view) {
-		if (checkbox.getVisibility() == View.VISIBLE) {
-			return;
-		}
-	}
-
-	@Override
 	public List<SequenceAction> addActionToSequence(Sprite sprite, SequenceAction sequence) {
 		if (userVariableName == null) {
-			userVariableName = "No variable set";
+			userVariableName = Constants.NO_VARIABLE_SELECTED;
 		}
 
-		sequence.addAction(ExtendedActions.hideText(sprite, userVariableName));
+		sequence.addAction(ExtendedActions.hideText(userVariableName));
 		return null;
+	}
+
+	void setUserVariableName(UserVariable userVariable) {
+		userVariableName = Constants.NO_VARIABLE_SELECTED;
+		try {
+			userVariableName = userVariable.getName();
+		} catch (NullPointerException e) {
+			Log.d(TAG, "Nothing selected yet.");
+		}
 	}
 }
