@@ -90,6 +90,8 @@ public class UploadProjectDialog extends DialogFragment {
 	}
 
 	public static final String DIALOG_FRAGMENT_TAG = "dialog_upload_project";
+	public static final String DIALOG_SHOW_RATE_US = "dialog_show_rate_us";
+	public static final String NUMBER_OF_UPLOADED_PROJECTS = "number_of_uploaded_projects";
 
 	private EditText projectUploadName;
 	private EditText projectDescriptionField;
@@ -272,6 +274,29 @@ public class UploadProjectDialog extends DialogFragment {
 		uploadIntent.putExtra("notificationId", notificationId);
 		activity = getActivity();
 		activity.startService(uploadIntent);
+
+		Boolean showRateUsDialog = sharedPreferences.getBoolean(DIALOG_SHOW_RATE_US, true);
+		int numberOfUploadedProjects = sharedPreferences.getInt(NUMBER_OF_UPLOADED_PROJECTS, 0);
+
+		if (showRateUsDialog && (numberOfUploadedProjects == 0)) {
+
+			LikePocketCodeDialog dialog = new LikePocketCodeDialog();
+			dialog.show(getFragmentManager(), LikePocketCodeDialog.TAG);
+		} else if (showRateUsDialog && (numberOfUploadedProjects % 3 == 0)) {
+
+			RatePocketCodeDialog dialog = new RatePocketCodeDialog();
+			dialog.show(getFragmentManager(), RatePocketCodeDialog.TAG);
+		}
+		sharedPreferences.edit().putInt(NUMBER_OF_UPLOADED_PROJECTS, numberOfUploadedProjects + 1).commit();
+/*
+		if(numberOfUploadedProjects >= 3){
+			//for testing only!!!!!!
+			//TODO: Remove later!!!!!!!!!
+			sharedPreferences.edit().putBoolean(DIALOG_SHOW_RATE_US, true).commit();
+			sharedPreferences.edit().putInt(NUMBER_OF_UPLOADED_PROJECTS, 0).commit();
+			//!!!!!!!!!!!!!!!!!1
+		}
+		*/
 	}
 
 	private void handleCancelButtonClick() {

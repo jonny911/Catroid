@@ -1096,6 +1096,20 @@
     <string name="choose_camera_back">back</string>
     <string name="error_flash_front_camera">"The flash can be used with the back camera only. Please add a \"Use
         camera\" brick and change to your device\'s back camera. "</string>
+    <string name="no_back_camera_available">No back facing camera available.</string>
+    <string name="no_camera_available">Facedetection not available.</string>
+    <string name="no_front_camera_available">No front facing camera available.</string>
+
+    <!-- Feedback-Dialog strings -->
+    <string name="like_to_send_feedback">Do you like to send us a feedback?</string>
+    <string name="like_pocketcode">Do you like Pocket Code?</string>
+    <string name="like_to_rate">Would you like to support our team by rating Pocket Code?</string>
+    <string name="dialog_title_feedback">Feedback</string>
+    <string name="dialog_title_rate">Rate us!</string>
+    <string name="rate_now">RATE NOW</string>
+    <string name="rate_later">ASK LATER</string>
+    <string name="rate_never">DON\'T ASK AGAIN</string>
+
     <!-- -->
 
 </resources>
