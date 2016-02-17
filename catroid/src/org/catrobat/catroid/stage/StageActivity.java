@@ -25,6 +25,7 @@ package org.catrobat.catroid.stage;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.Log;
@@ -130,9 +131,7 @@ public class StageActivity extends AndroidApplication {
 		FaceDetectionHandler.resumeFaceDetection();
 		FlashUtil.resumeFlash();
 		CameraManager.getInstance().resumePreviewAsync();
-
 		VibratorUtil.resumeVibrator();
-
 		SensorHandler.startSensorListener(this);
 
 		super.onResume();
