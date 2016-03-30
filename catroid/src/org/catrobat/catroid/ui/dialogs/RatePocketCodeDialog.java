@@ -57,9 +57,7 @@ public class RatePocketCodeDialog extends DialogFragment {
 									+ getActivity().getPackageName())));
 						}
 						Log.d(TAG, "Yes Button Clicked! :)");
-						SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-						sharedPreferences.edit().putBoolean(UploadProjectDialog.DIALOG_SHOW_RATE_US, false)
-								.commit();
+
 					}
 				})
 				.setNeutralButton(getString(R.string.rate_later), new DialogInterface.OnClickListener() {
@@ -73,8 +71,7 @@ public class RatePocketCodeDialog extends DialogFragment {
 					@Override
 					public void onClick(DialogInterface dialog, int id) {
 						Log.d(TAG, "Never Button Clicked! :C");
-						SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-						sharedPreferences.edit().putBoolean(UploadProjectDialog.DIALOG_SHOW_RATE_US, false).commit();
+
 					}
 				}).create();
 
