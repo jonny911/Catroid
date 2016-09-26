@@ -28,6 +28,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
@@ -45,7 +46,7 @@ public class UploadProjectTagsDialog extends DialogFragment implements GetTagsTa
 	public static final String DIALOG_TAGGING_FRAGMENT_TAG = "dialog_upload_project_tags";
 
 	public static final int MAX_NUMBER_OF_TAGS_CHECKED = 3;
-	public List<String> tags;
+	public List<String> tags = new ArrayList<>();
 
 	@Override
 	public Dialog onCreateDialog(final Bundle bundle) {
@@ -102,5 +103,9 @@ public class UploadProjectTagsDialog extends DialogFragment implements GetTagsTa
 	private void handleCancelButtonClick() {
 		Utils.invalidateLoginTokenIfUserRestricted(getActivity());
 		dismiss();
+	}
+
+	public boolean hasTags(){
+		return !tags.isEmpty();
 	}
 }

@@ -31,6 +31,7 @@ import android.content.DialogInterface.OnShowListener;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -178,7 +179,17 @@ public class UploadProjectDialog extends DialogFragment {
 			args.putString(Constants.PROJECT_UPLOAD_NAME, projectUploadName.getText().toString());
 			args.putString(Constants.PROJECT_UPLOAD_DESCRIPTION, projectDescriptionField.getText().toString());
 			tagDialog.setArguments(args);
-			tagDialog.show(getFragmentManager(), UploadProjectTagsDialog.DIALOG_TAGGING_FRAGMENT_TAG);
+			Log.d("Jonny", "hasTags = "+tagDialog.hasTags());
+			if(!tagDialog.hasTags()){
+				Log.d("Jonny", "no tags available");
+				UploadProgressDialog progressDialog = new UploadProgressDialog();
+				progressDialog.setProjectName(projectUploadName.getText().toString());
+				progressDialog.setProjectDescription(projectDescriptionField.getText().toString());
+				progressDialog.show(getFragmentManager(), UploadProgressDialog.DIALOG_PROGRESS_FRAGMENT_TAG);
+			}
+			else {
+				tagDialog.show(getFragmentManager(), UploadProjectTagsDialog.DIALOG_TAGGING_FRAGMENT_TAG);
+			}
 		}
 	}
 

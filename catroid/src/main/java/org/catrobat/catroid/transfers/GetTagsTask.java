@@ -79,14 +79,17 @@ public class GetTagsTask extends AsyncTask<String, Void, String> {
 	}
 
 	private List<String> parseTags(String response) throws JSONException {
-		List<String> tags = new ArrayList<>();
-
-		JSONObject json = new JSONObject(response);
-		JSONArray tagsJson = json.getJSONArray(TAGS_JSON_KEY);
-		for (int i = 0; i < tagsJson.length(); i++) {
-			tags.add(tagsJson.getString(i));
+		try {
+			List<String> tags = new ArrayList<>();
+			JSONObject json = new JSONObject(response);
+			JSONArray tagsJson = json.getJSONArray(TAGS_JSON_KEY);
+			for (int i = 0; i < tagsJson.length(); i++) {
+				tags.add(tagsJson.getString(i));
+			}
+			return Collections.unmodifiableList(tags);
+		} catch (Exception e) {
+			Log.d("jonny", "in exception");
+			return Collections.unmodifiableList(new ArrayList<String>());
 		}
-
-		return Collections.unmodifiableList(tags);
 	}
 }
