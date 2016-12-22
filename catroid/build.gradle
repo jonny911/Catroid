@@ -62,7 +62,7 @@ android {
             buildConfigField "boolean", "FEATURE_ARDUINO_ENABLED", "true"
             buildConfigField "boolean", "FEATURE_RASPI_ENABLED", "true"
             buildConfigField "boolean", "FEATURE_POCKETMUSIC_ENABLED", "true"
-            buildConfigField "boolean", "FIREBASE_CRASH_REPORT_ENABLED", "false"
+            buildConfigField "boolean", "FIREBASE_CRASH_REPORT_ENABLED", "true"
             resValue "string", "SNACKBAR_HINTS_ENABLED", "false"
         }
         release {
